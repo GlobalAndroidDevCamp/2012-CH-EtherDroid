@@ -24,10 +24,7 @@ public class Net
 
     final static String TAG = "Net";
 
-    void Net(){
-    }
-
-    String get(String url) {
+    static public String get(String url) {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);
