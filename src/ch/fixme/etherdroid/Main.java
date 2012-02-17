@@ -12,8 +12,8 @@ public class Main extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        EtherAPI api = new EtherAPI("http://62.220.136.218:9001");
-        String res = api.getText("GADC2012", null);
+        EtherAPI api = new EtherAPI("http://62.220.136.218:9001", "BFrMshLVWcrG4B6BsFeDRk1Iritq2Dfz");
+        String res = api.getText("GADC2012");
 
         TextView txt = (TextView)findViewById(R.id.txt);
         txt.setText(res);

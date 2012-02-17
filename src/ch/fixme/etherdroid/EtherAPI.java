@@ -8,18 +8,15 @@ public class EtherAPI
 {
 
     private String mUrl;
+    private String mApiKey;
     private static final int API_VERSION = 1;
 
-    public EtherAPI(String url) {
+    public EtherAPI(String url, String apikey) {
         this.mUrl = url + "/api/" + API_VERSION + "/";
+        this.mApiKey = apikey;
     }
 
-    public String getText(String padId, String revision) {
-        if(!new String().equals(revision)){
-            revision = "$" + revision;
-        } else {
-            revision = "";
-        }
-        return Net.get(mUrl + "getText?padID=" + padId + revision);
+    public String getText(String padId) {
+        return Net.get(mUrl + "getText?apikey=" + mApiKey + "&padID=" + padId);
     }
 }
