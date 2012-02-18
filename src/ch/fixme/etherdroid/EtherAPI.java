@@ -1,9 +1,5 @@
 package ch.fixme.etherdroid;
 
-import android.app.Activity;
-import android.os.Bundle;
-import java.lang.StringBuffer;
-
 public class EtherAPI
 {
 
