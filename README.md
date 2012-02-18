@@ -24,3 +24,7 @@ License
 -------
 FIXME
 
+WEBCLIENT
+---------
+    i=$(curl http://62.220.136.218:9001/socket.io/1/ --silent -b "token=t.Mo4J2EK2e9KJc51jai3K" | cut -d: -f 1)
+    curl http://62.220.136.218:9001/socket.io/1/xhr-polling/$i -b token=t.Mo4J2EK2e9KJc51jai3K
