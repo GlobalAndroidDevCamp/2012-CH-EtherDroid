@@ -1,12 +1,11 @@
 package ch.fixme.etherdroid;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.os.AsyncTask;
-import android.app.ProgressDialog;
-import android.app.Dialog;
-import android.content.Context;
 
 public class Main extends Activity
 {
