@@ -12,7 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class Main extends Activity {
+public class ActivityReader extends Activity {
 
     private EtherAPI mApi;
     private static final int DIALOG_LOADING = 1;
@@ -23,7 +23,7 @@ public class Main extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.reader);
         // Vertical scroll
         ((TextView) findViewById(R.id.padText)).setMovementMethod(ScrollingMovementMethod
                 .getInstance());
