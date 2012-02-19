@@ -28,7 +28,7 @@ Participants
 
 License
 -------
-FIXME
+- Icons are Apache 2.0 license from the "Icon Template Pack"
 
 WEBCLIENT
 ---------
