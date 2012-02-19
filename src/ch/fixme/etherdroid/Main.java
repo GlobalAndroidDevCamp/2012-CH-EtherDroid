@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 
 public class Main extends Activity {
@@ -20,6 +21,10 @@ public class Main extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        // Vertical scroll
+        ((TextView) findViewById(R.id.padText)).setMovementMethod(ScrollingMovementMethod
+                .getInstance());
+        // Get pad
         mApi = new EtherAPI("http://62.220.136.218:9001", "BFrMshLVWcrG4B6BsFeDRk1Iritq2Dfz");
         new GetTextTask().execute("GADC2012");
     }
@@ -46,7 +51,7 @@ public class Main extends Activity {
 
     private void handleResponse(Response res) {
         mLastResponse = res;
-        TextView txt = (TextView) findViewById(R.id.txt);
+        TextView txt = (TextView) findViewById(R.id.padText);
         switch (res.code) {
             case Response.CODE_OK:
                 if (res.data.containsKey("text")) {
