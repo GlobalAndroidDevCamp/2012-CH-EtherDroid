@@ -33,14 +33,16 @@ public class ActivityReader extends Activity {
 
         // Get information and create api access
         // URI: pad://host:port/apikey/padID
-        final Uri uri = getIntent().getData();
-        final List<String> path = uri.getPathSegments();
-        mApi = new EtherAPI(uri.getHost() + ":" + uri.getPort(), path.get(0));
-        new GetTextTask().execute(path.get(1));
-
-        // mLastResponse = new Response();
-        // mLastResponse.message = "URI is missing data";
-        // showDialog(DIALOG_ERROR);
+        try {
+            final Uri uri = getIntent().getData();
+            final List<String> path = uri.getPathSegments();
+            mApi = new EtherAPI(uri.getHost() + ":" + uri.getPort(), path.get(0));
+            new GetTextTask().execute(path.get(1));
+        } catch (Exception e) {
+            mLastResponse = new Response();
+            mLastResponse.message = "URI is missing data";
+            showDialog(DIALOG_ERROR);
+        }
     }
 
     @Override
