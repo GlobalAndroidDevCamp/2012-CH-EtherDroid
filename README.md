@@ -7,6 +7,12 @@ Features
 --------
 - Read pad
 
+Intents
+-------
+- Pad reader:
+  Action: android.intent.action.VIEW
+  Data: pad://host:port/apikey/PadID
+
 TODO
 ----
 - Real-time updates

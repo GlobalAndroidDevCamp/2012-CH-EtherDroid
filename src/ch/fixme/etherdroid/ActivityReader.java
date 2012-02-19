@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ public class ActivityReader extends Activity {
     private EtherAPI mApi;
     private static final int DIALOG_LOADING = 1;
     private static final int DIALOG_ERROR = 2;
+    private static final String TAG = "ActivityReader";
 
     private Response mLastResponse;
 
@@ -40,8 +42,10 @@ public class ActivityReader extends Activity {
             new GetTextTask().execute(path.get(1));
         } catch (Exception e) {
             mLastResponse = new Response();
+            mLastResponse.code = Response.CODE_WRONG_PARAM;
             mLastResponse.message = "URI is missing data";
             showDialog(DIALOG_ERROR);
+            Log.e(TAG, e.getMessage());
         }
     }
 
