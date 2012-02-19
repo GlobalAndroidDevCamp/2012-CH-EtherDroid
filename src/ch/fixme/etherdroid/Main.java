@@ -1,6 +1,7 @@
 package ch.fixme.etherdroid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -10,7 +11,10 @@ import android.widget.TextView;
 public class Main extends Activity {
 
     private EtherAPI mApi;
-    private static final int DIALOG_GETTEXT = 1;
+    private static final int DIALOG_LOADING = 1;
+    private static final int DIALOG_ERROR = 2;
+
+    private Response mLastResponse;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -22,23 +26,44 @@ public class Main extends Activity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        ProgressDialog dialog = null;
+        AlertDialog dialog = null;
         switch (id) {
-            case DIALOG_GETTEXT:
+            case DIALOG_LOADING:
                 dialog = new ProgressDialog(this);
-                dialog.setMessage("Loading...");
                 dialog.setCancelable(false);
-                dialog.setIndeterminate(true);
+                dialog.setMessage("Loading...");
+                ((ProgressDialog) dialog).setIndeterminate(true);
+                break;
+            case DIALOG_ERROR:
+                if (mLastResponse != null) {
+                    dialog = new AlertDialog.Builder(this).setMessage(mLastResponse.message)
+                            .setNeutralButton("Ok", null).create();
+                }
                 break;
         }
         return dialog;
+    }
+
+    private void handleResponse(Response res) {
+        mLastResponse = res;
+        TextView txt = (TextView) findViewById(R.id.txt);
+        switch (res.code) {
+            case Response.CODE_OK:
+                if (res.data.containsKey("text")) {
+                    txt.setText(res.data.get("text"));
+                }
+                break;
+            default:
+                showDialog(DIALOG_ERROR);
+                break;
+        }
     }
 
     private class GetTextTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
-            showDialog(DIALOG_GETTEXT);
+            showDialog(DIALOG_LOADING);
         }
 
         @Override
@@ -48,10 +73,8 @@ public class Main extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            TextView txt = (TextView) findViewById(R.id.txt);
-            txt.setText(result);
-            new Response(result);
-            dismissDialog(DIALOG_GETTEXT);
+            handleResponse(new Response(result));
+            dismissDialog(DIALOG_LOADING);
         }
 
     }

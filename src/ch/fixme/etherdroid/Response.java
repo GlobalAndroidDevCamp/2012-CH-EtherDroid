@@ -8,13 +8,19 @@ import org.json.JSONObject;
 
 public class Response {
 
-    public int code = 0;
-    public String message = "";
-    public HashMap<String, String> data = new HashMap<String, String>(0);
-
     private static final String KEY_CODE = "code";
     private static final String KEY_MSG = "message";
     private static final String KEY_DATA = "data";
+
+    public static final int CODE_OK = 0;
+    public static final int CODE_WRONG_PARAM = 1;
+    public static final int CODE_INTERNAL_ERROR = 2;
+    public static final int CODE_NO_SUCH_FUNCTION = 3;
+    public static final int CODE_WRONG_API_KEY = 4;
+
+    public int code = CODE_OK;
+    public String message = "";
+    public HashMap<String, String> data = new HashMap<String, String>(0);
 
     public Response() {
     }
