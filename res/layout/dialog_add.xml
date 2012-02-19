@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/add_host"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dip"
+            android:layout_weight="1"
+            android:hint="example.com"
+            android:inputType="textUri"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/add_port"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="80"
+            android:inputType="number"
+            android:maxLines="1"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/add_apikey"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="API Key"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+</LinearLayout>
