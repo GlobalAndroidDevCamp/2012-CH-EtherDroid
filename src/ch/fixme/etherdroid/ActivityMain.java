@@ -6,11 +6,12 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,11 +41,11 @@ public class ActivityMain extends Activity {
         mFrom = new String[] { "host" };
         mTo = new int[] { R.id.list_title };
         new ListTask().execute();
-        // Open reader by default (FIXME)
-        // Intent i = new Intent(Intent.ACTION_VIEW);
-        // i.setData(Uri.parse("pad://62.220.136.218:9001/BFrMshLVWcrG4B6BsFeDRk1Iritq2Dfz/GADC2012"));
-        // startActivity(i);
-        // finish();
+        // FIXME: Just for dev -> open reader
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse("pad://62.220.136.218:9001/BFrMshLVWcrG4B6BsFeDRk1Iritq2Dfz/GADC2012"));
+        startActivity(i);
+        finish();
     }
 
     @Override
