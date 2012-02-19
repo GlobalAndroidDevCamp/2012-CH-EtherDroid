@@ -13,7 +13,7 @@ public class ActivityMain extends Activity {
         setContentView(R.layout.main);
         // Open reader by default (FIXME)
         Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse("pad://62.220.136.218:9001/p/GADC2012"));
+        i.setData(Uri.parse("pad://62.220.136.218:9001/BFrMshLVWcrG4B6BsFeDRk1Iritq2Dfz/GADC2012"));
         startActivity(i);
         finish();
     }

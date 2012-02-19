@@ -1,9 +1,12 @@
 package ch.fixme.etherdroid;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -27,9 +30,17 @@ public class ActivityReader extends Activity {
         // Vertical scroll
         ((TextView) findViewById(R.id.padText)).setMovementMethod(ScrollingMovementMethod
                 .getInstance());
-        // Get pad
-        mApi = new EtherAPI("http://62.220.136.218:9001", "BFrMshLVWcrG4B6BsFeDRk1Iritq2Dfz");
-        new GetTextTask().execute("GADC2012");
+
+        // Get information and create api access
+        // URI: pad://host:port/apikey/padID
+        final Uri uri = getIntent().getData();
+        final List<String> path = uri.getPathSegments();
+        mApi = new EtherAPI(uri.getHost() + ":" + uri.getPort(), path.get(0));
+        new GetTextTask().execute(path.get(1));
+
+        // mLastResponse = new Response();
+        // mLastResponse.message = "URI is missing data";
+        // showDialog(DIALOG_ERROR);
     }
 
     @Override
@@ -43,7 +54,7 @@ public class ActivityReader extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
-                new GetTextTask().execute("GADC2012");
+                new GetTextTask().execute(mApi.mPadID);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
