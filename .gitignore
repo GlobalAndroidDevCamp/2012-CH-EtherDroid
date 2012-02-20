@@ -3,3 +3,4 @@ gen
 local.properties
 .project
 .classpath
+.settings/
