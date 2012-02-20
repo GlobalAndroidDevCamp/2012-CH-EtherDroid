@@ -6,10 +6,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 public class ActivityMain extends Activity {
 
@@ -27,29 +26,32 @@ public class ActivityMain extends Activity {
     private static final String QUERY_READ = "SELECT _id,host,port from hosts";
     private static final String QUERY_ADD = "INSERT INTO hosts (host, port, apikey) values (?,?,?)";
     private SimpleCursorAdapter mAdapter;
-    private String[] mFrom;
-    private int[] mTo;
     private Context mContext;
     private SQLiteDatabase mDb;
+    private Cursor mCursor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         mContext = getApplicationContext();
+		mAdapter = new SimpleCursorAdapter(mContext, R.layout.list_item, null,
+				new String[] { "host" }, new int[] { R.id.list_title });
+		((ListView) findViewById(R.id.list_hosts)).setAdapter(mAdapter);
         mDb = new Database(mContext).getWritableDatabase();
-        mFrom = new String[] { "host" };
-        mTo = new int[] { R.id.list_title };
         new ListTask().execute();
         // FIXME: Just for dev -> open reader
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse("pad://62.220.136.218:9001/BFrMshLVWcrG4B6BsFeDRk1Iritq2Dfz/GADC2012"));
-        startActivity(i);
-        finish();
+//        Intent i = new Intent(Intent.ACTION_VIEW);
+//        i.setData(Uri.parse("pad://62.220.136.218:9001/BFrMshLVWcrG4B6BsFeDRk1Iritq2Dfz/GADC2012"));
+//        startActivity(i);
+//        finish();
     }
 
     @Override
     public void onDestroy() {
+		if (mCursor != null && !mCursor.isClosed()) {
+			mCursor.close();
+		}
         if (mDb != null && mDb.isOpen()) {
             mDb.close();
         }
@@ -95,7 +97,6 @@ public class ActivityMain extends Activity {
                 final EditText txt_port = (EditText) layout.findViewById(R.id.add_port);
                 final EditText txt_key = (EditText) layout.findViewById(R.id.add_apikey);
                 builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
                     public void onClick(DialogInterface dialog, int which) {
                         new AddHost().execute(txt_host.getText().toString(), txt_port.getText()
                                 .toString(), txt_key.getText().toString());
@@ -118,9 +119,8 @@ public class ActivityMain extends Activity {
 
         @Override
         protected void onPostExecute(Cursor c) {
-            mAdapter = new SimpleCursorAdapter(mContext, R.layout.list_item, c, mFrom, mTo);
-            ListView list = (ListView) findViewById(R.id.list_hosts);
-            list.setAdapter(mAdapter);
+        	mCursor = c;
+        	mAdapter.changeCursor(mCursor);
         }
 
     }
@@ -135,9 +135,9 @@ public class ActivityMain extends Activity {
 
         @Override
         protected void onPostExecute(Void unused) {
+            mCursor.requery();
             mAdapter.notifyDataSetChanged();
+            Toast.makeText(mContext, "Host successfully added!", Toast.LENGTH_SHORT);
         }
-
     }
-
 }
