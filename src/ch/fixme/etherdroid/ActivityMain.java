@@ -137,7 +137,8 @@ public class ActivityMain extends Activity {
         protected void onPostExecute(Void unused) {
             mCursor.requery();
             mAdapter.notifyDataSetChanged();
-            Toast.makeText(mContext, "Host successfully added!", Toast.LENGTH_SHORT);
+			Toast.makeText(mContext, "Host successfully added!",
+					Toast.LENGTH_SHORT).show();
         }
     }
 }
