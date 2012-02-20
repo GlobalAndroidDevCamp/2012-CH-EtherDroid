@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -38,6 +40,13 @@ public class ActivityMain extends Activity {
 		mAdapter = new SimpleCursorAdapter(mContext, R.layout.list_item, null,
 				new String[] { "host" }, new int[] { R.id.list_title });
 		((ListView) findViewById(R.id.list_hosts)).setAdapter(mAdapter);
+		((ListView) findViewById(R.id.list_hosts))
+				.setOnItemClickListener(new OnItemClickListener() {
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						// List saved pads from this host
+					}
+				});
         mDb = new Database(mContext).getWritableDatabase();
         new ListTask().execute();
         // FIXME: Just for dev -> open reader
@@ -122,7 +131,6 @@ public class ActivityMain extends Activity {
         	mCursor = c;
         	mAdapter.changeCursor(mCursor);
         }
-
     }
 
     private class AddHost extends AsyncTask<String, Void, Void> {
