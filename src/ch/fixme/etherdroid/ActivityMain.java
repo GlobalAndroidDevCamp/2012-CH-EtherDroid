@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -39,14 +40,19 @@ public class ActivityMain extends Activity {
         mContext = getApplicationContext();
 		mAdapter = new SimpleCursorAdapter(mContext, R.layout.list_item, null,
 				new String[] { "host" }, new int[] { R.id.list_title });
-		((ListView) findViewById(R.id.list_hosts)).setAdapter(mAdapter);
-		((ListView) findViewById(R.id.list_hosts))
-				.setOnItemClickListener(new OnItemClickListener() {
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						// List saved pads from this host
-					}
-				});
+		ListView list = (ListView) findViewById(R.id.list_hosts); 
+		list.setAdapter(mAdapter);
+		list.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// List saved pads from this host
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				// Add extras with host id
+				i.setClass(ActivityMain.this, ActivityPads.class);
+				startActivity(i);
+			}
+		});
+		
         mDb = new Database(mContext).getWritableDatabase();
         new ListTask().execute();
         // FIXME: Just for dev -> open reader

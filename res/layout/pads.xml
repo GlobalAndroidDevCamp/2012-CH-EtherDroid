@@ -5,12 +5,12 @@
     android:layout_height="fill_parent"
     android:padding="1dip">
     <ListView
-        android:id="@+id/list_hosts"
+        android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
     <TextView 
-        android:id="@+id/empty"
+        android:id="@android:id/empty"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:text="Please add an etherpad lite server" />
+        android:text="No registered pad" />
 </LinearLayout>
