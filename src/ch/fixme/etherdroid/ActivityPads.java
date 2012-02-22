@@ -6,8 +6,10 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,14 +17,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 public class ActivityPads extends ListActivity {
 
 	private static final int DIALOG_ADD = 1;
-	private static final String QUERY_READ = "SELECT _id,name,padid from pads where hostid=?";
-	private static final String QUERY_ADD = "INSERT INTO pads (name, padid, hostid) values (?,?,?)";
+	private static final String QUERY_READ = "SELECT _id, name, padid FROM pads WHERE hostid=?";
+	private static final String QUERY_ADD = "INSERT INTO pads (name, padid, hostid) VALUES (?,?,?)";
+	private static final String QUERY_OPEN = "SELECT pads._id, pads.padid, hosts.host, hosts.port, hosts.apikey "
+			+ "FROM pads JOIN hosts ON hosts._id=pads.hostid WHERE pads._id=?";
 	private SQLiteDatabase mDb;
 	private Cursor mCursor;
 	private SimpleCursorAdapter mAdapter;
@@ -42,7 +47,7 @@ public class ActivityPads extends ListActivity {
 		setListAdapter(mAdapter);
 		mDb = new Database(this).getWritableDatabase();
 		mHostID = getIntent().getExtras().getLong("hostid");
-		new ListTask().execute(mHostID+"");
+		new ListTask().execute(mHostID + "");
 	}
 
 	@Override
@@ -51,6 +56,12 @@ public class ActivityPads extends ListActivity {
 		if (mDb != null && mDb.isOpen()) {
 			mDb.close();
 		}
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		new OpenPad().execute(id);
+		super.onListItemClick(l, v, position, id);
 	}
 
 	@Override
@@ -92,8 +103,10 @@ public class ActivityPads extends ListActivity {
 			builder.setPositiveButton("Add",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							new AddPad().execute(txt_host.getText().toString(),
-									txt_port.getText().toString(), mHostID+"");
+							new AddPad()
+									.execute(txt_host.getText().toString(),
+											txt_port.getText().toString(),
+											mHostID + "");
 						}
 					});
 			builder.setNegativeButton("Cancel", null);
@@ -132,6 +145,24 @@ public class ActivityPads extends ListActivity {
 			mAdapter.notifyDataSetChanged();
 			Toast.makeText(mContext, "Host successfully added!",
 					Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	private class OpenPad extends AsyncTask<Long, Void, Uri> {
+
+		@Override
+		protected Uri doInBackground(Long... data) {
+			Cursor c = mDb.rawQuery(QUERY_OPEN, new String[] { data[0] + "" });
+			c.moveToFirst();
+			return Uri.parse("pad://" + c.getString(2) + ":" + c.getString(3)
+					+ "/" + c.getString(4) + "/" + c.getString(1)); // Ugly
+		}
+
+		@Override
+		protected void onPostExecute(Uri uri) {
+			Intent i = new Intent(Intent.ACTION_VIEW);
+			i.setData(uri);
+			startActivity(i);
 		}
 	}
 
