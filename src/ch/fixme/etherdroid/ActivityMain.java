@@ -47,7 +47,7 @@ public class ActivityMain extends Activity {
 					int position, long id) {
 				// List saved pads from this host
 				Intent i = new Intent(Intent.ACTION_VIEW);
-				// Add extras with host id
+				i.putExtra("hostid", id);
 				i.setClass(ActivityMain.this, ActivityPads.class);
 				startActivity(i);
 			}

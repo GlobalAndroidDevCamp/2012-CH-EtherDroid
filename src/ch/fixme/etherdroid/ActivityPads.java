@@ -21,13 +21,13 @@ import android.widget.Toast;
 public class ActivityPads extends ListActivity {
 
 	private static final int DIALOG_ADD = 1;
-	private static final String QUERY_READ = "SELECT _id,name,padid from pads";
+	private static final String QUERY_READ = "SELECT _id,name,padid from pads where hostid=?";
 	private static final String QUERY_ADD = "INSERT INTO pads (name, padid, hostid) values (?,?,?)";
 	private SQLiteDatabase mDb;
 	private Cursor mCursor;
 	private SimpleCursorAdapter mAdapter;
 	private Context mContext;
-	protected String mHostID;
+	protected long mHostID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,8 @@ public class ActivityPads extends ListActivity {
 						R.id.list_pad_name, R.id.list_pad_id });
 		setListAdapter(mAdapter);
 		mDb = new Database(this).getWritableDatabase();
-		new ListTask().execute();
+		mHostID = getIntent().getExtras().getLong("hostid");
+		new ListTask().execute(mHostID+"");
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class ActivityPads extends ListActivity {
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							new AddPad().execute(txt_host.getText().toString(),
-									txt_port.getText().toString(), mHostID);
+									txt_port.getText().toString(), mHostID+"");
 						}
 					});
 			builder.setNegativeButton("Cancel", null);
@@ -103,11 +104,11 @@ public class ActivityPads extends ListActivity {
 		return dialog;
 	}
 
-	private class ListTask extends AsyncTask<Void, Void, Cursor> {
+	private class ListTask extends AsyncTask<String, Void, Cursor> {
 
 		@Override
-		protected Cursor doInBackground(Void... unused) {
-			return mDb.rawQuery(QUERY_READ, null);
+		protected Cursor doInBackground(String... data) {
+			return mDb.rawQuery(QUERY_READ, data);
 		}
 
 		@Override
