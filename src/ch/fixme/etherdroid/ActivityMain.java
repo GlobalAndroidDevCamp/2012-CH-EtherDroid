@@ -37,8 +37,8 @@ public class ActivityMain extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        mContext = getApplicationContext();
-		mAdapter = new SimpleCursorAdapter(mContext, R.layout.list_item, null,
+		mContext = getApplicationContext();
+		mAdapter = new SimpleCursorAdapter(mContext, R.layout.list_host, null,
 				new String[] { "host" }, new int[] { R.id.list_title });
 		ListView list = (ListView) findViewById(R.id.list_hosts); 
 		list.setAdapter(mAdapter);
@@ -105,8 +105,8 @@ public class ActivityMain extends Activity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Add host");
                 // Custom view
-                View layout = getLayoutInflater().inflate(R.layout.dialog_add, null);
-                builder.setView(layout);
+				View layout = getLayoutInflater().inflate(R.layout.dialog_add_host, null);
+				builder.setView(layout);
                 // Buttons actions
                 final EditText txt_host = (EditText) layout.findViewById(R.id.add_host);
                 final EditText txt_port = (EditText) layout.findViewById(R.id.add_port);
