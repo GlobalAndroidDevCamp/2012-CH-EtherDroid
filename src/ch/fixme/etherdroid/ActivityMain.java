@@ -26,12 +26,14 @@ public class ActivityMain extends Activity {
 
     private static final int DIALOG_LOADING = 1;
     private static final int DIALOG_ADD = 2;
+    private static final int DIALOG_ERROR = 3;
     private static final String QUERY_READ = "SELECT _id,host,port from hosts";
     private static final String QUERY_ADD = "INSERT INTO hosts (host, port, apikey) values (?,?,?)";
     private SimpleCursorAdapter mAdapter;
     private Context mContext;
     private SQLiteDatabase mDb;
     private Cursor mCursor;
+	private String mErrorMessage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class ActivityMain extends Activity {
 				new String[] { "host" }, new int[] { R.id.list_title });
 		ListView list = (ListView) findViewById(R.id.list_hosts); 
 		list.setAdapter(mAdapter);
+		list.setEmptyView(findViewById(R.id.empty));
 		list.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
@@ -97,33 +100,59 @@ public class ActivityMain extends Activity {
         switch (id) {
             case DIALOG_LOADING:
                 dialog = new ProgressDialog(this);
-                dialog.setCancelable(false);
+                dialog.setCancelable(true);
                 dialog.setMessage("Loading...");
                 ((ProgressDialog) dialog).setIndeterminate(true);
                 break;
             case DIALOG_ADD:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Add host");
+                AlertDialog.Builder b1 = new AlertDialog.Builder(this);
+                b1.setTitle("Add host");
                 // Custom view
 				View layout = getLayoutInflater().inflate(R.layout.dialog_add_host, null);
-				builder.setView(layout);
+				b1.setView(layout);
                 // Buttons actions
                 final EditText txt_host = (EditText) layout.findViewById(R.id.add_host);
                 final EditText txt_port = (EditText) layout.findViewById(R.id.add_port);
                 final EditText txt_key = (EditText) layout.findViewById(R.id.add_apikey);
-                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                b1.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        new AddHost().execute(txt_host.getText().toString(), txt_port.getText()
-                                .toString(), txt_key.getText().toString());
+                    	addHost(txt_host, txt_port, txt_key);
                     }
                 });
-                builder.setNegativeButton("Cancel", null);
+                b1.setNegativeButton("Cancel", null);
                 // Create
-                dialog = builder.create();
+                dialog = b1.create();
                 break;
+            case DIALOG_ERROR:
+                AlertDialog.Builder b2 = new AlertDialog.Builder(this);
+                b2.setTitle("Error");
+                b2.setMessage(mErrorMessage);
+                b2.setNeutralButton("Ok", null);
+                dialog = b2.create();
+            	break;
         }
         return dialog;
     }
+    
+	private void addHost(EditText host, EditText port, EditText key) {
+		if (new String("").equals(host.getText().toString())) {
+			mErrorMessage = "Please fill in the Host field";
+			showDialog(DIALOG_ERROR);
+			return;
+		}
+		if (new String("").equals(port.getText().toString())) {
+			mErrorMessage = "Please fill in the Port field";
+			showDialog(DIALOG_ERROR);
+			return;
+		}
+		if (new String("").equals(key.getText().toString())) {
+			mErrorMessage = "Please fill in the APIKey field";
+			showDialog(DIALOG_ERROR);
+			return;
+		}
+		new AddHost().execute(host.getText().toString(), port.getText()
+				.toString(), key.getText().toString());
+	}
 
     private class ListTask extends AsyncTask<Void, Void, Cursor> {
 
